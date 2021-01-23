@@ -1,53 +1,35 @@
 package me.fallenbreath.mc202246fix.mixins;
 
+import me.fallenbreath.mc202246fix.IDrownedEntity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ai.pathing.EntityNavigation;
 import net.minecraft.entity.mob.DrownedEntity;
 import net.minecraft.entity.mob.ZombieEntity;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Set;
-
 @Mixin(DrownedEntity.class)
-public abstract class DrownedEntityMixin extends ZombieEntity
+public abstract class DrownedEntityMixin extends ZombieEntity implements IDrownedEntity
 {
+	private EntityNavigation initialEntityNavigation;
+
 	public DrownedEntityMixin(World world)
 	{
 		super(world);
 	}
 
-	private EntityNavigation previousNavigation;
-
-	private boolean shouldSyncNavigation()
+	@Inject(method = "<init>", at = @At("TAIL"))
+	private void recordInitialNavigation(EntityType<? extends DrownedEntity> entityType, World world, CallbackInfo ci)
 	{
-		return !this.world.isClient && this.world instanceof ServerWorld;
+		this.initialEntityNavigation = this.getNavigation();
 	}
 
-	@Inject(method = "updateSwimming", at = @At("HEAD"))
-	void recordPreviousNavigation(CallbackInfo ci)
+	@Override
+	public EntityNavigation getInitialEntityNavigation()
 	{
-		if (this.shouldSyncNavigation())
-		{
-			this.previousNavigation = this.getNavigation();
-		}
-	}
-
-	@Inject(method = "updateSwimming", at = @At("RETURN"))
-	void synchronizeNavigation(CallbackInfo ci)
-	{
-		if (this.shouldSyncNavigation())
-		{
-			EntityNavigation currentNavigation = this.getNavigation();
-			if (currentNavigation != this.previousNavigation)
-			{
-				Set<EntityNavigation> navigationSet = ((ServerWorldAccessor) this.world).getEntityNavigations();
-				navigationSet.remove(this.previousNavigation);
-				navigationSet.add(currentNavigation);
-			}
-		}
+		return this.initialEntityNavigation;
 	}
 }

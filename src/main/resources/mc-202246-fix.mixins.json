@@ -4,8 +4,9 @@
   "package": "me.fallenbreath.mc202246fix.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "DrownedEntityAccessor",
     "DrownedEntityMixin",
-    "ServerWorldAccessor"
+    "ServerWorldMixin"
   ],
   "client": [
   ],
