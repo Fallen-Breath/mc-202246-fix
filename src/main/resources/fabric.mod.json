@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "template_mod",
+  "id": "mc-202246-fix",
   "version": "1.0.0",
 
-  "name": "template_mod",
-  "description": "",
+  "name": "MC-202246 Fix",
+  "description": "Fixed memory leak caused by drowned path finding AI",
   "authors": [
     "Fallen_Breath"
   ],
   "contact": {
-    "homepage": "https://www.curseforge.com/",
-    "sources": "https://github.com/"
+    "homepage": "https://github.com/Fallen-Breath/mc-202246-fix",
+    "sources": "https://github.com/Fallen-Breath/mc-202246-fix"
   },
 
   "icon": "assets/template_mod/icon.png",
@@ -21,7 +21,7 @@
     ]
   },
   "mixins": [
-    "template_mod.mixins.json"
+    "mc-202246-fix.mixins.json"
   ],
 
   "depends": {
